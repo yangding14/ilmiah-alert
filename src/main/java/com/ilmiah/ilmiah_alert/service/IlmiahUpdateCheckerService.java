@@ -34,6 +34,12 @@ public abstract class IlmiahUpdateCheckerService {
                 GetProjectListResp newProjectListResp =
                         ilmiahClient.getProjectList(getDepartment());
                 if (isChanged(newProjectListResp)) {
+                    logger.atInfo()
+                            .setMessage("Project changes detected from ilmiah")
+                            .addKeyValue("department", getDepartment())
+                            .addKeyValue("addedProjects", getAddedProjects(newProjectListResp))
+                            .addKeyValue("removedProjects", getRemovedProjects(newProjectListResp))
+                            .log();
                     alertService.alertSubscribers(
                             getDepartment(),
                             getAddedProjects(newProjectListResp),
