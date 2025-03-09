@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.ilmiah</groupId>
 	<artifactId>ilmiah-alert</artifactId>
-	<version>0.1.1</version>
+	<version>0.1.2</version>
 	<name>ilmiah-alert</name>
 	<description>Get alerts from Ilmiah updates</description>
 	<url/>
