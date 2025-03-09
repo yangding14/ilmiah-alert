@@ -53,15 +53,21 @@ public class AlertService {
             List<ProjectData> addedProjectData,
             List<ProjectData> removedProjectData) {
         StringBuilder builder =
-                new StringBuilder().append("Department ").append(department.name()).append(" has ");
+                new StringBuilder()
+                        .append("Department ")
+                        .append(department.departmentName())
+                        .append(" has \n");
 
         if (!addedProjectData.isEmpty()) {
             builder.append(addedProjectData.size());
-            builder.append(" new projects:\n");
+            builder.append(" new project(s):\n");
             for (int i = 0; i < addedProjectData.size(); i++) {
                 builder.append(i + 1)
                         .append(". ")
                         .append(addedProjectData.get(i).title())
+                        .append(" (Supervisor: ")
+                        .append(addedProjectData.get(i).supervisor())
+                        .append(")")
                         .append("\n");
             }
         }
@@ -70,11 +76,14 @@ public class AlertService {
             if (!addedProjectData.isEmpty()) {
                 builder.append("and ");
             }
-            builder.append(removedProjectData.size()).append(" projects removed:\n");
+            builder.append(removedProjectData.size()).append(" project(s) removed:\n");
             for (int i = 0; i < removedProjectData.size(); i++) {
                 builder.append(i + 1)
                         .append(". ")
                         .append(removedProjectData.get(i).title())
+                        .append(" (Supervisor: ")
+                        .append(addedProjectData.get(i).supervisor())
+                        .append(")")
                         .append("\n");
             }
         }
