@@ -1,6 +1,6 @@
 package com.ilmiah.ilmiah_alert.external.alert;
 
-import com.ilmiah.ilmiah_alert.external.alert.dto.TelegramSendMessageReq;
+import com.ilmiah.ilmiah_alert.external.alert.dto.DiscordSendMessageReq;
 
 import io.micrometer.observation.ObservationRegistry;
 
@@ -19,42 +19,45 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.time.Duration;
 
 @Component
-public class TelegramAlertClient implements AlertClient {
-    private static final Logger logger = LoggerFactory.getLogger(TelegramAlertClient.class);
+public class DiscordAlertClient implements AlertClient {
+    private static final Logger logger = LoggerFactory.getLogger(DiscordAlertClient.class);
     private static final int timeout = 3000;
     private final RestClient restClient;
-    private final String telegramBotToken;
+    private final String discordWebhookId;
+    private final String discordWebhookToken;
 
-    public TelegramAlertClient(
-            @Value("${alert.telegram.telegram-bot-token}") String telegramBotToken,
+    public DiscordAlertClient(
+            @Value("${alert.discord.discord-webhook-id}") String discordWebhookId,
+            @Value("${alert.discord.discord-webhook-token}") String discordWebhookToken,
             ObservationRegistry observationRegistry) {
         this.restClient =
                 RestClient.builder()
                         .requestFactory(getRequestFactory())
                         .observationRegistry(observationRegistry)
                         .build();
-        this.telegramBotToken = telegramBotToken;
+        this.discordWebhookId = discordWebhookId;
+        this.discordWebhookToken = discordWebhookToken;
     }
 
     @Override
     public void sendAlert(String id, String message) {
         String uri =
                 UriComponentsBuilder.fromUriString(
-                                "https://api.telegram.org/bot{token}/sendMessage")
+                                "https://discord.com/api/webhooks/{discordWebhookId}/{discordWebhookToken}")
                         .build()
                         .toUriString();
 
-        TelegramSendMessageReq requestBody = new TelegramSendMessageReq(id, message);
+        DiscordSendMessageReq req = new DiscordSendMessageReq(message);
 
         try {
             restClient
                     .post()
-                    .uri(uri, telegramBotToken)
-                    .body(requestBody)
+                    .uri(uri, discordWebhookId, discordWebhookToken)
+                    .body(req)
                     .retrieve()
                     .toBodilessEntity();
         } catch (Exception e) {
-            logger.atError().setMessage("Failed to send alert to telegram").setCause(e).log();
+            logger.atError().setMessage("Failed to send alert to discord").setCause(e).log();
         }
     }
 
