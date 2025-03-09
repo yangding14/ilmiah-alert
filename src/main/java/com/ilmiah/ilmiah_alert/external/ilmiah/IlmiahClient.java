@@ -12,6 +12,8 @@ import org.apache.hc.client5.http.impl.classic.HttpClients;
 import org.apache.hc.core5.util.Timeout;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Component;
+import org.springframework.util.LinkedMultiValueMap;
+import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestClient;
 import org.springframework.web.util.UriComponentsBuilder;
 
@@ -31,10 +33,14 @@ public class IlmiahClient {
     }
 
     public GetProjectListResp getProjectList(Department department) throws IlmiahApiException {
+        MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
+        queryParams.add("department", String.valueOf(department.id()));
+        queryParams.add("length", String.valueOf(200));
+
         String uri =
                 UriComponentsBuilder.fromUriString(
                                 "https://ilmiah.fsktm.um.edu.my/project/list/datatable")
-                        .queryParam("department", department.id())
+                        .queryParams(queryParams)
                         .build()
                         .toUriString();
 
