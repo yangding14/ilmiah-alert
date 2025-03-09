@@ -41,13 +41,18 @@ public class TelegramAlertClient implements AlertClient {
         String uri =
                 UriComponentsBuilder.fromUriString(
                                 "https://api.telegram.org/bot{token}/sendMessage")
-                        .buildAndExpand(telegramBotToken)
+                        .build()
                         .toUriString();
 
         TelegramSendMessageReq requestBody = new TelegramSendMessageReq(id, message);
 
         try {
-            restClient.post().uri(uri).body(requestBody).retrieve();
+            restClient
+                    .post()
+                    .uri(uri, telegramBotToken)
+                    .body(requestBody)
+                    .retrieve()
+                    .toBodilessEntity();
         } catch (Exception e) {
             logger.atError().setMessage("Failed to send alert to telegram").setCause(e).log();
         }
