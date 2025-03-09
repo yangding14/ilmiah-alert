@@ -4,6 +4,8 @@ import com.ilmiah.ilmiah_alert.external.ilmiah.dto.GetProjectListResp;
 import com.ilmiah.ilmiah_alert.model.Department;
 import com.ilmiah.ilmiah_alert.model.IlmiahApiException;
 
+import io.micrometer.observation.ObservationRegistry;
+
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.stereotype.Component;
 import org.springframework.web.client.RestClient;
@@ -15,8 +17,12 @@ public class IlmiahClient {
     private static final int readTimeout = 5000;
     private final RestClient restClient;
 
-    public IlmiahClient() {
-        this.restClient = RestClient.builder().requestFactory(getRequestFactory()).build();
+    public IlmiahClient(ObservationRegistry observationRegistry) {
+        this.restClient =
+                RestClient.builder()
+                        .observationRegistry(observationRegistry)
+                        .requestFactory(getRequestFactory())
+                        .build();
     }
 
     public GetProjectListResp getProjectList(Department department) throws IlmiahApiException {

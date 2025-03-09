@@ -2,6 +2,8 @@ package com.ilmiah.ilmiah_alert.external.alert;
 
 import com.ilmiah.ilmiah_alert.external.alert.dto.TelegramSendMessageReq;
 
+import io.micrometer.observation.ObservationRegistry;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -16,8 +18,9 @@ public class TelegramAlertClient implements AlertClient {
     private final String telegramBotToken;
 
     public TelegramAlertClient(
-            @Value("${alert.telegram.telegram-bot-token}") String telegramBotToken) {
-        this.restClient = RestClient.builder().build();
+            @Value("${alert.telegram.telegram-bot-token}") String telegramBotToken,
+            ObservationRegistry observationRegistry) {
+        this.restClient = RestClient.builder().observationRegistry(observationRegistry).build();
         this.telegramBotToken = telegramBotToken;
     }
 
