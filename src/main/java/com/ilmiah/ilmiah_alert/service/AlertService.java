@@ -1,7 +1,8 @@
 package com.ilmiah.ilmiah_alert.service;
 
 import com.ilmiah.ilmiah_alert.config.AlertSubcriberList;
-import com.ilmiah.ilmiah_alert.external.alert.AlertClient;
+import com.ilmiah.ilmiah_alert.external.alert.DiscordAlertClient;
+import com.ilmiah.ilmiah_alert.external.alert.TelegramAlertClient;
 import com.ilmiah.ilmiah_alert.external.ilmiah.dto.ProjectData;
 import com.ilmiah.ilmiah_alert.model.Department;
 
@@ -14,15 +15,18 @@ import java.util.concurrent.TimeUnit;
 
 @Service
 public class AlertService {
-    private final AlertClient alertClient;
+    private final TelegramAlertClient alertClient;
+    private final DiscordAlertClient discordAlertClient;
     private final AlertSubcriberList alertSubcriberList;
     private final String adminTelegramId;
 
     public AlertService(
-            AlertClient alertClient,
+            TelegramAlertClient alertClient,
+            DiscordAlertClient discordAlertClient,
             AlertSubcriberList alertSubcriberList,
             @Value("${alert.admin.telegram}") String adminTelegramId) {
         this.alertClient = alertClient;
+        this.discordAlertClient = discordAlertClient;
         this.alertSubcriberList = alertSubcriberList;
         this.adminTelegramId = adminTelegramId;
     }
@@ -31,6 +35,8 @@ public class AlertService {
             Department department,
             List<ProjectData> addedProjectData,
             List<ProjectData> removedProjectData) {
+        discordAlertClient.sendAlert(
+                null, resolveMessage(department, addedProjectData, removedProjectData));
         alertSubcriberList
                 .getSubscribers(department)
                 .forEach(
@@ -47,15 +53,21 @@ public class AlertService {
             List<ProjectData> addedProjectData,
             List<ProjectData> removedProjectData) {
         StringBuilder builder =
-                new StringBuilder().append("Department ").append(department.name()).append(" has ");
+                new StringBuilder()
+                        .append("Department ")
+                        .append(department.departmentName())
+                        .append(" has \n");
 
         if (!addedProjectData.isEmpty()) {
             builder.append(addedProjectData.size());
-            builder.append(" new projects:\n");
+            builder.append(" new project(s):\n");
             for (int i = 0; i < addedProjectData.size(); i++) {
                 builder.append(i + 1)
                         .append(". ")
                         .append(addedProjectData.get(i).title())
+                        .append(" (Supervisor: ")
+                        .append(addedProjectData.get(i).supervisor())
+                        .append(")")
                         .append("\n");
             }
         }
@@ -64,11 +76,14 @@ public class AlertService {
             if (!addedProjectData.isEmpty()) {
                 builder.append("and ");
             }
-            builder.append(removedProjectData.size()).append(" projects removed:\n");
+            builder.append(removedProjectData.size()).append(" project(s) removed:\n");
             for (int i = 0; i < removedProjectData.size(); i++) {
                 builder.append(i + 1)
                         .append(". ")
                         .append(removedProjectData.get(i).title())
+                        .append(" (Supervisor: ")
+                        .append(addedProjectData.get(i).supervisor())
+                        .append(")")
                         .append("\n");
             }
         }
