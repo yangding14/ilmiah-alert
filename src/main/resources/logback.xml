@@ -1,0 +1,22 @@
+<configuration>
+    <!-- Silence logback's own status logs -->
+    <statusListener class="ch.qos.logback.core.status.NopStatusListener" />
+
+    <appender name="JSON_CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder class="net.logstash.logback.encoder.LogstashEncoder">
+            <customFields>{"app_name":"my-application"}</customFields>
+            <!-- Fix the stackTraceJsonFormatter config -->
+            <throwableConverter class="net.logstash.logback.stacktrace.ShortenedThrowableConverter">
+                <rootCauseFirst>true</rootCauseFirst>
+                <inlineHashCode>false</inlineHashCode>
+                <maxDepthPerThrowable>30</maxDepthPerThrowable>
+                <shortenedClassNameLength>50</shortenedClassNameLength>
+            </throwableConverter>
+        </encoder>
+    </appender>
+
+    <root level="info">
+        <appender-ref ref="JSON_CONSOLE" />
+    </root>
+
+</configuration>

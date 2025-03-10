@@ -16,7 +16,6 @@ public abstract class IlmiahUpdateCheckerService {
     private final IlmiahClient ilmiahClient;
     private final AlertService alertService;
     private GetProjectListResp currentProjectListResp;
-    private boolean isAlertSent = false;
 
     public IlmiahUpdateCheckerService(
             IlmiahClient ilmiahClient, AlertService alertService, Logger logger) {
@@ -45,7 +44,6 @@ public abstract class IlmiahUpdateCheckerService {
                             getAddedProjects(newProjectListResp),
                             getRemovedProjects(newProjectListResp));
                     currentProjectListResp = newProjectListResp;
-                    isAlertSent = false;
                 }
             }
         } catch (Exception e) {
@@ -54,9 +52,8 @@ public abstract class IlmiahUpdateCheckerService {
                     .setCause(e)
                     .addKeyValue("department", getDepartment())
                     .log();
-            if (!isAlertSent && getDepartment() == Department.ARTIFICIAL_INTELLIGENCE) {
+            if (getDepartment() == Department.ARTIFICIAL_INTELLIGENCE) {
                 alertService.alertAdmin(e.getMessage());
-                isAlertSent = true;
             }
         }
     }
