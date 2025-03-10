@@ -2,7 +2,6 @@ package com.ilmiah.ilmiah_alert.config;
 
 import com.ilmiah.ilmiah_alert.model.Department;
 
-import org.springframework.context.annotation.Configuration;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.Resource;
 
@@ -15,7 +14,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-@Configuration
+// @Configuration
 public class AlertSubcriberList {
 
     private final Map<Department, List<String>> departmentSubscribers = new ConcurrentHashMap<>();
