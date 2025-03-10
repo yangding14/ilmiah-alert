@@ -3,8 +3,8 @@ name: Build and Deploy
 on:
   workflow_dispatch:
     inputs:
-      description:
-        description: 'Deployment description (optional)'
+      release_notes:
+        description: 'Release notes for this deployment'
         required: false
         type: string
 
@@ -87,8 +87,9 @@ jobs:
       with:
         tag_name: v${{ env.VERSION }}
         name: Release v${{ env.VERSION }}
+        body: ${{ github.event.inputs.release_notes }}
         draft: false
         prerelease: false
-        generate_release_notes: true
+        generate_release_notes: ${{ github.event.inputs.release_notes == '' }}
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
