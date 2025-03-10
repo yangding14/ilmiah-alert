@@ -1,6 +1,7 @@
 package com.ilmiah.ilmiah_alert.external.alert;
 
 import com.ilmiah.ilmiah_alert.external.alert.dto.DiscordSendMessageReq;
+import com.ilmiah.ilmiah_alert.utils.LongMessageResolverUtils;
 
 import io.micrometer.observation.ObservationRegistry;
 
@@ -26,6 +27,8 @@ public class DiscordAlertClient implements AlertClient {
     private final RestClient restClient;
     private final String discordWebhookId;
     private final String discordWebhookToken;
+    private final LongMessageResolverUtils longMessageResolverUtils =
+            new LongMessageResolverUtils();
 
     public DiscordAlertClient(
             @Value("${alert.discord.discord-webhook-id}") String discordWebhookId,
@@ -46,13 +49,19 @@ public class DiscordAlertClient implements AlertClient {
                 .addKeyValue("message", message)
                 .setMessage("Sending alert to discord")
                 .log();
+        longMessageResolverUtils
+                .breakMessageIntoParts(message, MAX_MESSAGE_LENGTH)
+                .forEach(this::sendAlertPart);
+    }
+
+    private void sendAlertPart(String messagePart) {
         String uri =
                 UriComponentsBuilder.fromUriString(
                                 "https://discord.com/api/webhooks/{discordWebhookId}/{discordWebhookToken}")
                         .build()
                         .toUriString();
 
-        DiscordSendMessageReq req = new DiscordSendMessageReq(trimMessage(message));
+        DiscordSendMessageReq req = new DiscordSendMessageReq(messagePart);
 
         try {
             restClient
@@ -64,12 +73,6 @@ public class DiscordAlertClient implements AlertClient {
         } catch (Exception e) {
             logger.atError().setMessage("Failed to send alert to discord").setCause(e).log();
         }
-    }
-
-    private String trimMessage(String message) {
-        return message.length() > MAX_MESSAGE_LENGTH
-                ? (message.substring(0, MAX_MESSAGE_LENGTH) + "..(trimmed)")
-                : message;
     }
 
     private HttpComponentsClientHttpRequestFactory getRequestFactory() {

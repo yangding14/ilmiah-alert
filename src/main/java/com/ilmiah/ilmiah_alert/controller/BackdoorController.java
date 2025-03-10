@@ -9,7 +9,6 @@ import com.ilmiah.ilmiah_alert.service.AlertService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Collections;
 import java.util.List;
 
 @RestController
@@ -37,8 +36,12 @@ public class BackdoorController {
     @PostMapping("/sendAlert")
     public ResponseEntity<String> sendAlert(
             @RequestParam("department") Department department,
-            @RequestBody List<ProjectData> addedProjectData) {
-        alertService.alertSubscribers(department, addedProjectData, Collections.emptyList());
+            @RequestBody BackdoorProjectDataReq projectData) {
+        alertService.alertSubscribers(
+                department, projectData.addedProjectData, projectData.removedProjectData);
         return ResponseEntity.ok("Success");
     }
+
+    public record BackdoorProjectDataReq(
+            List<ProjectData> addedProjectData, List<ProjectData> removedProjectData) {}
 }

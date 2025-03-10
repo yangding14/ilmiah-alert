@@ -56,18 +56,17 @@ public class AlertService {
             List<ProjectData> removedProjectData) {
         StringBuilder builder =
                 new StringBuilder()
-                        .append("Department ")
+                        .append(">> **")
                         .append(department.departmentName())
-                        .append(" has \n");
+                        .append("** << \n");
 
         if (!addedProjectData.isEmpty()) {
-            builder.append(addedProjectData.size());
-            builder.append(" new project(s):\n");
+            builder.append("\n").append(addedProjectData.size()).append(" project(s) added:\n\n");
             for (int i = 0; i < addedProjectData.size(); i++) {
                 builder.append(i + 1)
-                        .append(". ")
+                        .append(". **")
                         .append(addedProjectData.get(i).title())
-                        .append(" (Supervisor: ")
+                        .append("** (Supervisor: ")
                         .append(addedProjectData.get(i).supervisor())
                         .append(")")
                         .append("\n");
@@ -75,20 +74,19 @@ public class AlertService {
         }
 
         if (!removedProjectData.isEmpty()) {
-            if (!addedProjectData.isEmpty()) {
-                builder.append("and ");
-            }
-            builder.append(removedProjectData.size()).append(" project(s) removed:\n");
+            builder.append("\n").append(removedProjectData.size()).append(" project(s) removed:\n\n");
             for (int i = 0; i < removedProjectData.size(); i++) {
                 builder.append(i + 1)
-                        .append(". ")
+                        .append(". **")
                         .append(removedProjectData.get(i).title())
-                        .append(" (Supervisor: ")
+                        .append("** (Supervisor: ")
                         .append(removedProjectData.get(i).supervisor())
                         .append(")")
                         .append("\n");
             }
         }
+
+        builder.append("\n########END_OF_MESSAGE########");
 
         return builder.toString();
     }
