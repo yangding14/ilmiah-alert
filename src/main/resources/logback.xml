@@ -4,7 +4,6 @@
 
     <appender name="JSON_CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
         <encoder class="net.logstash.logback.encoder.LogstashEncoder">
-            <customFields>{"app_name":"my-application"}</customFields>
             <!-- Fix the stackTraceJsonFormatter config -->
             <throwableConverter class="net.logstash.logback.stacktrace.ShortenedThrowableConverter">
                 <rootCauseFirst>true</rootCauseFirst>
