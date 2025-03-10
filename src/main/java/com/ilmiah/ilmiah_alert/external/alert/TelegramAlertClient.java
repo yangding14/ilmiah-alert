@@ -22,6 +22,7 @@ import java.time.Duration;
 public class TelegramAlertClient implements AlertClient {
     private static final Logger logger = LoggerFactory.getLogger(TelegramAlertClient.class);
     private static final int timeout = 3000;
+    private static final int MAX_MESSAGE_LENGTH = 4000;
     private final RestClient restClient;
     private final String telegramBotToken;
 
@@ -38,13 +39,18 @@ public class TelegramAlertClient implements AlertClient {
 
     @Override
     public void sendAlert(String id, String message) {
+        logger.atInfo()
+                .addKeyValue("message", message)
+                .setMessage("Sending alert to telegram")
+                .log();
+
         String uri =
                 UriComponentsBuilder.fromUriString(
                                 "https://api.telegram.org/bot{token}/sendMessage")
                         .build()
                         .toUriString();
 
-        TelegramSendMessageReq requestBody = new TelegramSendMessageReq(id, message);
+        TelegramSendMessageReq requestBody = new TelegramSendMessageReq(id, trimMessage(message));
 
         try {
             restClient
@@ -56,6 +62,12 @@ public class TelegramAlertClient implements AlertClient {
         } catch (Exception e) {
             logger.atError().setMessage("Failed to send alert to telegram").setCause(e).log();
         }
+    }
+
+    private String trimMessage(String message) {
+        return message.length() > MAX_MESSAGE_LENGTH
+                ? (message.substring(0, MAX_MESSAGE_LENGTH) + "..(trimmed)")
+                : message;
     }
 
     private HttpComponentsClientHttpRequestFactory getRequestFactory() {
