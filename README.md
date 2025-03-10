@@ -7,7 +7,7 @@ A notification service that monitors updates on [ilmiah.fsktm.um.edu.my](https:/
 As students at FSKTM (Faculty of Computer Science and Information Technology), University of Malaya, we often face challenges with delayed or missing announcements about important project updates. This can lead to:
 
 - Missing critical updates and falling behind peers
-- Increased anxiety and FOMO (Fear Of Missing Out)
+- Increased anxiety and FOMO
 - Wasted time repeatedly checking the platform for changes
 
 Ilmiah Alert solves this problem by automatically monitoring the Ilmiah platform and sending immediate notifications when changes are detected.
