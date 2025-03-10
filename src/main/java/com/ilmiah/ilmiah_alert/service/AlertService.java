@@ -37,15 +37,17 @@ public class AlertService {
             List<ProjectData> removedProjectData) {
         discordAlertClient.sendAlert(
                 null, resolveMessage(department, addedProjectData, removedProjectData));
-        alertSubcriberList
-                .getSubscribers(department)
-                .forEach(
-                        subscriberId -> {
-                            alertClient.sendAlert(
-                                    subscriberId,
-                                    resolveMessage(
-                                            department, addedProjectData, removedProjectData));
-                        });
+        alertAdmin(resolveMessage(department, addedProjectData, removedProjectData));
+        //        alertSubcriberList
+        //                .getSubscribers(department)
+        //                .forEach(
+        //                        subscriberId -> {
+        //                            alertClient.sendAlert(
+        //                                    subscriberId,
+        //                                    resolveMessage(
+        //                                            department, addedProjectData,
+        // removedProjectData));
+        //                        });
     }
 
     private String resolveMessage(
