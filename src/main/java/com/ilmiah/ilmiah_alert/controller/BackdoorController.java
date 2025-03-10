@@ -4,7 +4,6 @@ import com.ilmiah.ilmiah_alert.external.ilmiah.IlmiahClient;
 import com.ilmiah.ilmiah_alert.external.ilmiah.dto.GetProjectListResp;
 import com.ilmiah.ilmiah_alert.external.ilmiah.dto.ProjectData;
 import com.ilmiah.ilmiah_alert.model.Department;
-import com.ilmiah.ilmiah_alert.model.IlmiahApiException;
 import com.ilmiah.ilmiah_alert.service.AlertService;
 
 import org.springframework.http.ResponseEntity;
@@ -31,7 +30,7 @@ public class BackdoorController {
 
     @GetMapping("/getProjectList")
     public ResponseEntity<GetProjectListResp> getProjectList(
-            @RequestParam("department") Department department) throws IlmiahApiException {
+            @RequestParam("department") Department department) {
         return ResponseEntity.ok(ilmiahClient.getProjectList(department));
     }
 
