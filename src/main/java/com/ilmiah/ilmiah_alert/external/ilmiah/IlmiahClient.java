@@ -2,7 +2,6 @@ package com.ilmiah.ilmiah_alert.external.ilmiah;
 
 import com.ilmiah.ilmiah_alert.external.ilmiah.dto.GetProjectListResp;
 import com.ilmiah.ilmiah_alert.model.Department;
-import com.ilmiah.ilmiah_alert.model.IlmiahApiException;
 
 import io.micrometer.observation.ObservationRegistry;
 
@@ -32,7 +31,7 @@ public class IlmiahClient {
                         .build();
     }
 
-    public GetProjectListResp getProjectList(Department department) throws IlmiahApiException {
+    public GetProjectListResp getProjectList(Department department) {
         MultiValueMap<String, String> queryParams = new LinkedMultiValueMap<>();
         queryParams.add("department", String.valueOf(department.id()));
         queryParams.add("length", String.valueOf(200));
@@ -44,11 +43,7 @@ public class IlmiahClient {
                         .build()
                         .toUriString();
 
-        try {
-            return restClient.get().uri(uri).retrieve().body(GetProjectListResp.class);
-        } catch (Exception e) {
-            throw new IlmiahApiException(e.getMessage(), e.getCause());
-        }
+        return restClient.get().uri(uri).retrieve().body(GetProjectListResp.class);
     }
 
     private HttpComponentsClientHttpRequestFactory getRequestFactory() {
