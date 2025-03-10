@@ -84,7 +84,7 @@ public class AlertService {
                         .append(". ")
                         .append(removedProjectData.get(i).title())
                         .append(" (Supervisor: ")
-                        .append(addedProjectData.get(i).supervisor())
+                        .append(removedProjectData.get(i).supervisor())
                         .append(")")
                         .append("\n");
             }
