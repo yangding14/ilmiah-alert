@@ -74,7 +74,9 @@ public class AlertService {
         }
 
         if (!removedProjectData.isEmpty()) {
-            builder.append("\n").append(removedProjectData.size()).append(" project(s) removed:\n\n");
+            builder.append("\n")
+                    .append(removedProjectData.size())
+                    .append(" project(s) removed:\n\n");
             for (int i = 0; i < removedProjectData.size(); i++) {
                 builder.append(i + 1)
                         .append(". **")
