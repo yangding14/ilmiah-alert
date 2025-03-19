@@ -6,9 +6,11 @@ import com.ilmiah.ilmiah_alert.service.AlertService;
 import com.ilmiah.ilmiah_alert.service.IlmiahUpdateCheckerService;
 
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
 @Service
+@ConditionalOnProperty(value = "checker.computer-system-and-network.enabled", havingValue = "true")
 public class ComputerSystemAndNetworkCheckerService extends IlmiahUpdateCheckerService {
 
     public ComputerSystemAndNetworkCheckerService(

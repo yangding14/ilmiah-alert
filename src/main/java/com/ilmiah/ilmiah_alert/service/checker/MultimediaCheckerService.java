@@ -6,9 +6,11 @@ import com.ilmiah.ilmiah_alert.service.AlertService;
 import com.ilmiah.ilmiah_alert.service.IlmiahUpdateCheckerService;
 
 import org.slf4j.LoggerFactory;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Service;
 
 @Service
+@ConditionalOnProperty(value = "checker.multimedia.enabled", havingValue = "true")
 public class MultimediaCheckerService extends IlmiahUpdateCheckerService {
 
     public MultimediaCheckerService(IlmiahClient ilmiahClient, AlertService alertService) {
